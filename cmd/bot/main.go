@@ -30,6 +30,7 @@ func main() {
 	bot.Start()
 }
 
+// Bot создает объект бота
 func Bot() *telebot.Bot {
 	token := mustToken()
 
@@ -46,6 +47,7 @@ func Bot() *telebot.Bot {
 	return bot
 }
 
+// mustToken получает токен из .env
 func mustToken() string {
 	return os.Getenv("TG_TOKEN")
 }
