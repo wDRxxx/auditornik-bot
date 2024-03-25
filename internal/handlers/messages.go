@@ -2,6 +2,10 @@ package handlers
 
 const (
 	msgStart = `Привет! Я бот-аудиторник для портала ies.unitech-mo.ru.
-Для выбора подразделения введи /choose`
-	msgChoose = `Для выбора подраздления нажми на него в клавиатуре телеграм.`
+Для выбора группы введи /choose <group>.
+Пример: /choose П1-22`
+	msgChooseGroupNoTag = `Ты не указал группу, попробуй снова.
+Пример: /choose П1-22`
+	msgChooseGroupSuccess = `Запомнил твою группу: `
+	msgChooseGroupFail    = `Не нашел такой группы`
 )
