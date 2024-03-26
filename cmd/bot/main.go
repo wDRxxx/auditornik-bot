@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/wDRxxx/auditornik-bot/internal/config"
 	"github.com/wDRxxx/auditornik-bot/internal/handlers"
+	"github.com/wDRxxx/auditornik-bot/internal/storage"
 	"gopkg.in/telebot.v3"
 	"log"
 	"os"
@@ -18,10 +19,14 @@ func main() {
 		log.Fatalf("Error loading .env file %s", err.Error())
 	}
 
-	bot := Bot()
+	bot, strg := run()
 	app.Bot = bot
 
-	repo := handlers.NewRepository(&app)
+	if err != nil {
+		log.Fatalf("error while getting storage: %w", err)
+	}
+
+	repo := handlers.NewRepository(&app, strg)
 	handlers.NewHandlers(repo)
 
 	routes(&app)
@@ -30,9 +35,10 @@ func main() {
 	bot.Start()
 }
 
-// Bot создает объект бота
-func Bot() *telebot.Bot {
+// run создает объект бота и хранилища
+func run() (*telebot.Bot, storage.Storage) {
 	token := mustToken()
+	sqlitePath := mustSQLitePath()
 
 	pref := telebot.Settings{
 		Token:  token,
@@ -44,10 +50,20 @@ func Bot() *telebot.Bot {
 		log.Fatal(err)
 	}
 
-	return bot
+	strg, err := storage.NewSQLite(sqlitePath)
+	if err != nil {
+		log.Fatalf("error getting storage: %s", err.Error())
+	}
+
+	return bot, strg
 }
 
 // mustToken получает токен из .env
 func mustToken() string {
 	return os.Getenv("TG_TOKEN")
+}
+
+// mustSQLitePath получает путь sqlite бд из .env
+func mustSQLitePath() string {
+	return os.Getenv("DBPATH")
 }

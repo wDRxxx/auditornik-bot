@@ -2,20 +2,23 @@ package handlers
 
 import (
 	"github.com/wDRxxx/auditornik-bot/internal/config"
+	"github.com/wDRxxx/auditornik-bot/internal/storage"
 	"gopkg.in/telebot.v3"
 )
 
 var Repo *Repository
 
 type Repository struct {
-	App *config.AppConfig
+	App     *config.AppConfig
+	Storage storage.Storage
 }
 
 // NewRepository создает новый репозиторий
-func NewRepository(a *config.AppConfig) *Repository {
+func NewRepository(a *config.AppConfig, s storage.Storage) *Repository {
 	initGroups()
 	return &Repository{
-		App: a,
+		App:     a,
+		Storage: s,
 	}
 }
 
@@ -38,12 +41,13 @@ func (m *Repository) ChooseGroup(c telebot.Context) error {
 
 	group := tags[0]
 
-	groupId, exists := groups[group]
+	_, exists := groups[group]
 	if !exists {
 		return c.Send(msgChooseGroupFail)
 	}
 
 	// TODO добавление записи в хранилище: юзер и его группы
+	m.Storage.ZXC()
 
 	return c.Send(msgChooseGroupSuccess + group)
 }
