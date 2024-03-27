@@ -7,6 +7,7 @@ const (
 Пример: /setgroup П1-22`
 	msgChooseGroupNoTag = `Ты не указал группу, попробуй снова.
 Пример: /setgroup П1-22`
+	// TODO улучшить msgChooseGroupSuccess
 	msgChooseGroupSuccess = `Запомнил твою группу: `
 	msgChooseGroupFail    = `Не нашел такой группы`
 )
