@@ -34,6 +34,8 @@ func (m *Repository) Start(c telebot.Context) error {
 
 // ChooseGroup обрабатывает выбор группы
 func (m *Repository) ChooseGroup(c telebot.Context) error {
+// SetGroup обрабатывает выбор группы
+func (m *Repository) SetGroup(c telebot.Context) error {
 	tags := c.Args()
 	if len(tags) == 0 {
 		return c.Send(msgChooseGroupNoTag)

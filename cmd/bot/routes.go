@@ -8,5 +8,5 @@ import (
 // routes инициализирует роуты бота
 func routes(a *config.AppConfig) {
 	a.Bot.Handle("/start", handlers.Repo.Start)
-	a.Bot.Handle("/choose", handlers.Repo.ChooseGroup)
+	a.Bot.Handle("/setgroup", handlers.Repo.SetGroup)
 }
