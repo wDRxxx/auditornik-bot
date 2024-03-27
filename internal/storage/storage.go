@@ -7,7 +7,9 @@ import (
 )
 
 type Storage interface {
-	ZXC()
+	UserGroup(userId int64) (int, error)
+	SaveUserGroup(userId int64, groupId int) error
+	UpdateUserGroup(userId int64, groupId int) error
 }
 
 func NewSQLite(path string) (Storage, error) {

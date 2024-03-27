@@ -20,7 +20,12 @@ func WrapErrNotNil(text string, err error) error {
 }
 
 // ServerError выводит ошибку и ее стэк в консоль, а также возвращает обернутую ошибку
+// если сама ошибка не nil
 func ServerError(text string, err error) error {
+	if err == nil {
+		return nil
+	}
+
 	log.Printf("[ERR]: %s\n%s", err.Error(), debug.Stack())
 	return WrapErr(text, err)
 }
