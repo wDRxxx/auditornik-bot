@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/wDRxxx/auditornik-bot/internal/helpers"
 	"github.com/wDRxxx/auditornik-bot/internal/models"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -52,8 +53,9 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 			case 0:
 				class.Num = strings.TrimSpace(s.Text())
 			case 2:
-				// TODO убрать надписи в subject после '-'
-				class.Subject = strings.TrimSpace(s.Text())
+				exploded := strings.Split(strings.TrimSpace(s.Text()), "-")
+				log.Println(exploded)
+				class.Subject = exploded[0]
 				if class.Subject == "" {
 					return
 				}

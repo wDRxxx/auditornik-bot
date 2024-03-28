@@ -64,6 +64,7 @@ func (m *Repository) SetGroup(c telebot.Context) error {
 	return c.Send(msgChooseGroupSuccess + groupName)
 }
 
+// TODO обработка если пользователь не в бд
 // ScheduleToday отправляет расписание на сегодня
 func (m *Repository) ScheduleToday(c telebot.Context) error {
 	// отправляет сообщение через объект бота, сохраняя его.
@@ -87,7 +88,10 @@ func (m *Repository) ScheduleToday(c telebot.Context) error {
 		return err
 	}
 
-	msg, err = m.App.Bot.Edit(msg, schedule)
+	// html парсинг для правильного отображения сообщения
+	msg, err = m.App.Bot.Edit(msg, schedule, &telebot.SendOptions{
+		ParseMode: telebot.ModeHTML,
+	})
 	if err != nil {
 		return err
 	}
