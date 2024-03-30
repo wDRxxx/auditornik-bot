@@ -15,16 +15,15 @@ type Class struct {
 func (class *Class) String() string {
 	// html теги для метода парсинга бота
 	result := fmt.Sprintf(
-		`<b>%s пара</b>
+		`<b>%s пара - %s</b>
 <i>%s
 %s</i>
-<b>%s</b>
 
 `,
 		class.Num,
+		class.Cabinet,
 		class.Subject,
 		class.Teacher,
-		class.Cabinet,
 	)
 
 	return result

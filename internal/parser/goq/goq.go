@@ -1,12 +1,11 @@
 package goq
 
 import (
-	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/wDRxxx/auditornik-bot/internal/helpers"
 	"github.com/wDRxxx/auditornik-bot/internal/models"
-	"log"
+	"github.com/wDRxxx/auditornik-bot/internal/storage"
 	"net/http"
 	"strings"
 )
@@ -31,21 +30,34 @@ func (m *Goq) ScheduleForGroupByDate(groupId int, date string) (string, error) {
 
 // parseSchedule получает расписание на день из документа
 func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, error) {
+	var schedule models.ScheduleDay
+
 	// содержит объект таблицы с расписанием на выбранный день
 	var scheduleTable *goquery.Selection
 	doc.Find(".text-center").Each(func(i int, s *goquery.Selection) {
 		if strings.Contains(s.Text(), date) {
+			// проверка на наличие чего-то дополнительного типо праздника
+			cssStyle, _ := s.Next().Attr("class")
+			if cssStyle != "text-center schedule_event" {
+				s = s.Next()
+			}
+
+			// на случай практик или чего-то такого в расписании
+			event := strings.TrimSpace(s.Next().Text())
+			if event != "Учебные занятия" {
+				schedule.Event = event
+			}
+
 			scheduleTable = s.Next().Next()
 			return
 		}
 	})
 
 	if scheduleTable == nil {
-		return models.ScheduleDay{}, errors.New("error getting schedule table")
+		return models.ScheduleDay{}, helpers.ServerError("", storage.ErrGettingSchedule)
 	}
 
 	// получает данные расписания на определенный день
-	var schedule models.ScheduleDay
 	scheduleTable.Find("tbody").Find("tr").Each(func(_ int, sel *goquery.Selection) {
 		var class models.Class
 		sel.Find("td").Each(func(i int, s *goquery.Selection) {
@@ -54,7 +66,6 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 				class.Num = strings.TrimSpace(s.Text())
 			case 2:
 				exploded := strings.Split(strings.TrimSpace(s.Text()), "-")
-				log.Println(exploded)
 				class.Subject = exploded[0]
 				if class.Subject == "" {
 					return
@@ -72,6 +83,10 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 			schedule.Classes = append(schedule.Classes, class)
 		}
 	})
+
+	if len(schedule.Classes) == 0 {
+		return schedule, storage.ErrNoClasses
+	}
 
 	return schedule, nil
 }

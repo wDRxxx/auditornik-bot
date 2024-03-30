@@ -3,6 +3,7 @@ package handlers
 var groups map[string]int
 
 // InitGroups иниициализирует мапу групп и их айди
+// как вариант использовать бд, но в этом случае смысла в этом не так много.
 func initGroups() {
 	groups = make(map[string]int)
 
