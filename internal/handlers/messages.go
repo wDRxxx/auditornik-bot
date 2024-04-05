@@ -36,7 +36,9 @@ const (
 /unsubscribe - Выключение ежедневной рассылки расписания;
 /about - доп. техническая информация.
 `
-	msgAbout = `Бот написан на go v1.21;
+	msgAbout = `tg: @drx_links
+
+Бот написан на go v1.21;
 Исходный код - https://github.com/wDRxxx/auditornik-bot
 `
 )
