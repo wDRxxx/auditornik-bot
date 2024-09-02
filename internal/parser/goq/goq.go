@@ -36,15 +36,9 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 	var scheduleTable *goquery.Selection
 	doc.Find(".text-center").Each(func(i int, s *goquery.Selection) {
 		if strings.Contains(s.Text(), date) {
-			// проверка на наличие чего-то дополнительного типо праздника
-			cssStyle, _ := s.Next().Attr("class")
-			if cssStyle != "text-center schedule_event" {
-				s = s.Next()
-			}
+			schedule.Event = strings.Replace(strings.TrimSpace(s.Text()), "\n", "-", -1)
 
-			schedule.Event = strings.Replace(strings.TrimSpace(s.Next().Text()), "\n", "-", -1)
-
-			scheduleTable = s.Next().Next()
+			scheduleTable = s.Next()
 			return
 		}
 	})
