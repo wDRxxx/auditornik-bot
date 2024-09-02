@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const HourToTick uint = 19
+const HourToTick uint = 18
 const MinuteToTick uint = 00
 
 // JobTicker - тикер для периодического запуска необходимых функций

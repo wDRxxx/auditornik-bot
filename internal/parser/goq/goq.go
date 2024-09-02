@@ -42,11 +42,7 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 				s = s.Next()
 			}
 
-			// на случай практик или чего-то такого в расписании
-			event := strings.TrimSpace(s.Next().Text())
-			if event != "Учебные занятия" {
-				schedule.Event = event
-			}
+			schedule.Event = strings.Replace(strings.TrimSpace(s.Next().Text()), "\n", "-", -1)
 
 			scheduleTable = s.Next().Next()
 			return

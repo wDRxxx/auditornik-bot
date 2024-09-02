@@ -50,7 +50,8 @@ func NewHandlers(r *Repository) {
 func (m *Repository) Mailing() error {
 	// создается мапа расписания по группам, если группы нет в мапе -
 	// создем расписание и кладем туда, иначе просто берем из мапы
-	schedules := make(map[int]string)
+	var schedules sync.Map
+
 	users, err := m.Storage.AllUsersWithMailing()
 	if err != nil {
 		return err
@@ -62,19 +63,22 @@ func (m *Repository) Mailing() error {
 	for _, user := range users {
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, user models.User) {
-			defer wg.Done()
+			defer func() {
+				wg.Done()
+			}()
 			log.Println(user)
 
-			schedule, exists := schedules[user.GroupId]
+			schedule, exists := schedules.Load(user.GroupId)
 			if exists {
-				err = m.sendMailingSchedule(schedule, user.Id)
+				err = m.sendMailingSchedule(schedule.(string), user.Id)
 				if err != nil {
 					log.Println(err)
+					return
 				}
 			}
 
-			scheduleString, err := m.Parser.ScheduleForGroupByDate(user.GroupId, tomorrow)
-			schedules[user.GroupId] = scheduleString
+			schedule, err = m.Parser.ScheduleForGroupByDate(user.GroupId, tomorrow)
+			schedules.Store(user.GroupId, schedule)
 
 			if errors.Is(err, storage.ErrNoClasses) {
 				return
@@ -84,7 +88,7 @@ func (m *Repository) Mailing() error {
 				return
 			}
 
-			err = m.sendMailingSchedule(scheduleString, user.Id)
+			err = m.sendMailingSchedule(schedule.(string), user.Id)
 
 			if err != nil {
 				log.Println(err)
@@ -278,6 +282,7 @@ func (m *Repository) userGroup(msg *telebot.Message, c telebot.Context) (int, er
 	return groupId, nil
 }
 
+// sendMailingSchedule отправляет расписание
 func (m *Repository) sendMailingSchedule(schedule string, userId int) error {
 	schedule = "Расписание на завтра\n" + schedule
 
