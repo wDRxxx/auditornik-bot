@@ -1,13 +1,16 @@
 package job_ticker
 
 import (
-	"github.com/go-co-op/gocron/v2"
-	"github.com/wDRxxx/auditornik-bot/internal/helpers"
 	"log"
 	"time"
+
+	"github.com/go-co-op/gocron/v2"
+
+	"github.com/wDRxxx/auditornik-bot/internal/helpers"
 )
 
-const HourToTick uint = 19
+// UTC
+const HourToTick uint = 14
 const MinuteToTick uint = 00
 
 // JobTicker - тикер для периодического запуска необходимых функций
