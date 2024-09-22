@@ -9,7 +9,7 @@ type Keyboard struct {
 	BtnTomorrow *telebot.Btn
 }
 
-// New создает новый объект (неожиданно)
+// New создает новый объект
 func New() *Keyboard {
 	menu := &telebot.ReplyMarkup{ResizeKeyboard: true}
 	btnToday := menu.Text("Расписание на сегодня")

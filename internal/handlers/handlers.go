@@ -4,18 +4,20 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/wDRxxx/auditornik-bot/internal/config"
-	"github.com/wDRxxx/auditornik-bot/internal/keyboard"
-	"github.com/wDRxxx/auditornik-bot/internal/models"
-	"github.com/wDRxxx/auditornik-bot/internal/parser"
-	"github.com/wDRxxx/auditornik-bot/internal/storage"
-	job_ticker "github.com/wDRxxx/auditornik-bot/pkg/job-ticker"
-	"gopkg.in/telebot.v3"
 	"log"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"gopkg.in/telebot.v3"
+
+	"github.com/wDRxxx/auditornik-bot/internal/config"
+	"github.com/wDRxxx/auditornik-bot/internal/keyboard"
+	"github.com/wDRxxx/auditornik-bot/internal/models"
+	"github.com/wDRxxx/auditornik-bot/internal/parser"
+	"github.com/wDRxxx/auditornik-bot/internal/storage"
+	"github.com/wDRxxx/auditornik-bot/pkg/job-ticker"
 )
 
 var Repo *Repository
@@ -142,7 +144,10 @@ func (m *Repository) SetGroup(c telebot.Context) error {
 		return err
 	}
 
-	return c.Send(fmt.Sprintf(msgChooseGroupSuccess, strings.ToUpper(groupName)), Repo.Keyboard.Menu)
+	return c.Send(
+		fmt.Sprintf(msgChooseGroupSuccess, strings.ToUpper(groupName)),
+		Repo.Keyboard.Menu,
+	)
 }
 
 func (m *Repository) UpdateMailing(c telebot.Context) error {

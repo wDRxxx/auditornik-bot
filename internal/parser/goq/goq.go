@@ -2,12 +2,14 @@ package goq
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/PuerkitoBio/goquery"
+
 	"github.com/wDRxxx/auditornik-bot/internal/helpers"
 	"github.com/wDRxxx/auditornik-bot/internal/models"
 	"github.com/wDRxxx/auditornik-bot/internal/storage"
-	"net/http"
-	"strings"
 )
 
 type Goq struct{}
@@ -39,6 +41,9 @@ func parseSchedule(doc *goquery.Document, date string) (models.ScheduleDay, erro
 			schedule.Event = strings.Replace(strings.TrimSpace(s.Text()), "\n", "-", -1)
 
 			scheduleTable = s.Next()
+			if scheduleTable.Text() == "Учебная практика" {
+				scheduleTable = scheduleTable.Next()
+			}
 			return
 		}
 	})
